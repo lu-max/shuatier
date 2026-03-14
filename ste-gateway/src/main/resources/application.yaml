@@ -1,0 +1,39 @@
+server:
+  port: 8080
+
+spring:
+  application:
+    name: ste-gateway
+  autoconfigure:
+    exclude:
+      - org.springframework.boot.autoconfigure.jdbc.DataSourceAutoConfiguration
+  data:
+    redis:
+      host: localhost
+      port: 6379
+  cloud:
+    gateway:
+      server:
+        webflux:
+          routes:
+            - id: ste-user-api
+              uri: http://localhost:8081
+              predicates:
+                - Path=/api/user/**
+            - id: ste-user-docs
+              uri: http://localhost:8081
+              predicates:
+                - Path=/swagger-ui/**,/swagger-ui.html,/v3/api-docs/**
+          globalcors:
+            cors-configurations:
+              '[/**]':
+                allowedOriginPatterns: "*"
+                allowedMethods: "*"
+                allowedHeaders: "*"
+
+shuaitier:
+  jwt:
+    secret: shuaitier-jwt-secret-key-please-change-2026
+    expire-minutes: 120
+    refresh-expire-minutes: 10080
+    issuer: ste-user
